@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 10
+    commands:
+      - apt-get update -y
+      - apt-get install -y yarn
+  pre_build:
+    commands:
+      - cd ConnectDatabase
+      - echo Installing NPM dependencies
+      - yarn install
+      - cd .. && cd Invoke
+      - echo Installing NPM dependencies
+      - yarn install
+
+  build:
+    commands:
+      - cd .. && cd ConnectDatabase
+      - echo build started for TriggerLambda on `date`
+      - zip -r trigger.zip trigger.js src node_modules
+      - aws lambda update-function-code --function-name ${TriggerLambda} --zip-file "fileb://trigger.zip"
+      - cd .. && cd Invoke
+      - echo build started for Invoke on `date`
+      - zip -r executor.zip executor.js src node_modules
+      - aws lambda update-function-code --function-name ${ExecutorLambda} --zip-file "fileb://executor.zip"
