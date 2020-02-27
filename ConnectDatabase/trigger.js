@@ -40,38 +40,38 @@ const startExecution = async (name, input) => {
             if (err) {
                 reject(err);
             }
-            describeExecution(data.executionArn)
-            // resolve(data)
+            // describeExecution(data.executionArn)
+            resolve(data)
         });
     });
 }
 
 
-const describeExecution = async (name) => {
-    var params = {
-        executionArn: name
-    };
-    var finalResponse =  new Promise(function(resolve,reject){
-        var checkStatusOfStepFunction =  setInterval(function(){
-            stepfunctions.describeExecution(params, function(err, data) {
-                if (err){
-                    clearInterval(checkStatusOfStepFunction);
-                    reject(err); 
-                }
-                else {
-                    if(data.status !== 'RUNNING'){
-                      clearInterval(checkStatusOfStepFunction);
-                      resolve(data.output);
-                    } 
-                    if(data.status === 'FAILED')
-                    {
-                        notify.notifyErrorOnSlack('Error while calling Executor Lambda');
-                    }
-                }
-            }); 
-        },200);
-    });
-    return finalResponse
-}
+// const describeExecution = async (name) => {
+//     var params = {
+//         executionArn: name
+//     };
+//     var finalResponse =  new Promise(function(resolve,reject){
+//         var checkStatusOfStepFunction =  setInterval(function(){
+//             stepfunctions.describeExecution(params, function(err, data) {
+//                 if (err){
+//                     clearInterval(checkStatusOfStepFunction);
+//                     reject(err); 
+//                 }
+//                 else {
+//                     if(data.status !== 'RUNNING'){
+//                       clearInterval(checkStatusOfStepFunction);
+//                       resolve(data.output);
+//                     } 
+//                     if(data.status === 'FAILED')
+//                     {
+//                         notify.notifyErrorOnSlack('Error while calling Executor Lambda');
+//                     }
+//                 }
+//             }); 
+//         },200);
+//     });
+//     return finalResponse
+// }
 
 
